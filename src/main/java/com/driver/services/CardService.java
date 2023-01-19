@@ -4,6 +4,8 @@ import com.driver.models.Student;
 import com.driver.models.Card;
 import com.driver.models.CardStatus;
 import com.driver.repositories.CardRepository;
+import com.driver.repositories.StudentRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +16,16 @@ public class CardService {
     @Autowired
     CardRepository cardRepository3;
 
+    
     public Card createAndReturn(Student student){
+
+        //set card
         Card card = null;
+        card=new Card();
+        card.setCardStatus(CardStatus.ACTIVATED);
+    //set student detail;
+        card.setStudent(student);
+        cardRepository3.save(card);
         //link student with a new card
         return card;
     }
