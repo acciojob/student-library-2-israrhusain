@@ -30,7 +30,12 @@ public class StudentService {
     }
 
     public void createStudent(Student student){
+           
+           Card newcard=cardService4.createAndReturn(student);
+           student.setCard(newcard);
+
            studentRepository4.save(student);
+
     }
 
     public void updateStudent(Student student){

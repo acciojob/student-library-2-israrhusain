@@ -62,7 +62,7 @@ public class TransactionService {
                     }
                 }
                 CardStatus status=card.getCardStatus();
-                if(card==null && status.compareTo(CardStatus.DEACTIVATED)==0) {
+                if(card==null && (status.compareTo(CardStatus.DEACTIVATED)==0)) {
                       throw new Exception("Card is invalid");
                 }
 
@@ -75,7 +75,7 @@ public class TransactionService {
                 t.setTransactionStatus(TransactionStatus.SUCCESSFUL);
                 t.setTransactionDate(new Date());
                 t.setIssueOperation(true);
-               List<Transaction> list=book.getTransactions();
+                List<Transaction> list=book.getTransactions();
                 list.add(t);
 
                 transactionRepository5.save(t);
@@ -97,7 +97,7 @@ public class TransactionService {
         //for the given transaction calculate the fine amount considering the book has been returned exactly when this function is called
         //make the book available for other users
         //make a new transaction for return book which contains the fine amount as well
-         transaction.setFineAmount(200);
+         transaction.setFineAmount(transaction.getFineAmount());
          Transaction tran=new Transaction();
          Book book=bookRepository5.findById(bookId).get();
          Card card=cardRepository5.findById(cardId).get();

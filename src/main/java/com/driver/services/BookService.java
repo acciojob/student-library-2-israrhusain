@@ -4,10 +4,12 @@ import com.driver.models.Author;
 import com.driver.models.Book;
 import com.driver.repositories.AuthorRepository;
 import com.driver.repositories.BookRepository;
+//import com.driver.repositories.CardRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BookService {
@@ -15,16 +17,28 @@ public class BookService {
 
     @Autowired
     BookRepository bookRepository2;
+
+    @Autowired
     AuthorRepository rep;
 
+  
+
     public void createBook(Book book){
-        book=new Book();
-        Author author=rep.findById(book.getAuthor().getId()).get();
-        book.setAuthor(author);
+
         book.setAvailable(true);
-       
-        book.setGenre(book.getGenre());
         book.setName(book.getName());
+        book.setGenre(book.getGenre());
+       
+         
+        //set author
+        int id=book.getAuthor().getId();
+       
+        Author author=rep.findById(id).get();
+        List<Book> list=author.getBooksWritten();
+        list.add(book);
+        author.setBooksWritten(list);
+        book.setAuthor(author);
+       
        
         bookRepository2.save(book);
         
@@ -32,11 +46,17 @@ public class BookService {
 
     public List<Book> getBooks(String genre, boolean available, String author){
         List<Book> books = null; //find the elements of the list by yourself
+        
+          books= bookRepository2.findBooksByGenreAuthor(genre,author,available);
+        //  List<BookResponseDto> list=BookResponseconvertor.BookResponseToEntity(book1);
 
-           books= bookRepository2.findBooksByGenreAuthor(genre,author,available);
+         // return list;
+          
 
         return books;
     }
+
+   
 
     
 
