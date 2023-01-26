@@ -35,6 +35,7 @@ public class Card {
     public Card(){
         this.cardStatus = CardStatus.ACTIVATED;
     }
+    
 
     public int getId() {
         return id;

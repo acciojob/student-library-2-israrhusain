@@ -22,16 +22,7 @@ public class Book {
 
    
 
-    public Book(int id, String name, Genre genre, Author author, Card card, boolean available,
-            List<Transaction> transactions) {
-        this.id = id;
-        this.name = name;
-        this.genre = genre;
-        this.author = author;
-        this.card = card;
-        this.available = available;
-        this.transactions = transactions;
-    }
+    
 
     @ManyToOne
     @JoinColumn
@@ -52,6 +43,13 @@ public class Book {
     private List<Transaction> transactions;
 
     public Book() {
+    }
+
+    public Book(String name, Genre genre, boolean available) {
+        this.name = name;
+        this.genre = genre;
+        this.available=false;
+       
     }
 
     public int getId() {
