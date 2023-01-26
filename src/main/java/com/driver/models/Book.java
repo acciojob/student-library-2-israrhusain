@@ -18,6 +18,16 @@ public class Book {
     @Enumerated(EnumType.STRING)
     private Genre genre;
 
+    
+
+    public Book(int id, String name, Genre genre, Card card, boolean available) {
+        this.id = id;
+        this.name = name;
+        this.genre = genre;
+        this.card = card;
+        this.available = available;
+    }
+
     @ManyToOne
     @JoinColumn
     @JsonIgnoreProperties("booksWritten")
