@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class TransactionService {
@@ -48,46 +49,53 @@ public class TransactionService {
         //If the transaction is successful, save the transaction to the list of transactions and return the id
 
         //Note that the error message should match exactly in all cases
-        
+           Transaction transaction=new Transaction();
              Card card=cardRepository5.findById(cardId).get();
              Book book=bookRepository5.findById(bookId).get();
-             Genre genre []=Genre.values();
-             if(book!=null && card !=null){
-                if(book.isAvailable()==false){
-                    for(Genre value:genre){
-                          if(value.equals(book.getName())){
-                              throw new Exception("Book is either unavailable or not present");
-                          }
-                          
-                    }
+             
+             if(book==null || !book.isAvailable() ){
+                   transaction.setTransactionStatus(TransactionStatus.FAILED);
+                    transactionRepository5.save(transaction);
+                    throw new Exception ("Book is either unavailable or not present");
                 }
                 CardStatus status=card.getCardStatus();
-                if(card==null && (status.compareTo(CardStatus.DEACTIVATED)==0)) {
+                if(card==null && (status.equals(CardStatus.DEACTIVATED))) {
+                    transaction.setTransactionStatus(TransactionStatus.FAILED);
                       throw new Exception("Card is invalid");
                 }
 
-                if(card.getBooks().size()>max_allowed_books){
+                if(card.getBooks().size()>=max_allowed_books){
+                    transaction.setTransactionStatus(TransactionStatus.FAILED);
+                    transactionRepository5.save(transaction);
                     throw new Exception("Book limit has reached for this card");
                 }
-                Transaction t=new Transaction();
-                t.setBook(book);
-                t.setCard(card);
-                t.setTransactionStatus(TransactionStatus.SUCCESSFUL);
-                t.setTransactionDate(new Date());
-                t.setIssueOperation(true);
-                List<Transaction> list=book.getTransactions();
-                list.add(t);
+               
+                transaction.setBook(book);
+                transaction.setCard(card);
+                
+                //transaction.setTransactionDate(new Date());
+                transaction.setIssueOperation(true);
+                book.setCard(card);
+                book.setAvailable(false);
+                List<Book> list=card.getBooks();
+                list.add(book);
+                card.setBooks(list);
 
-                transactionRepository5.save(t);
-               return t.getTransactionId();
+                cardRepository5.save(card);
+                bookRepository5.updateBook(book);
 
+                transaction.setTransactionStatus(TransactionStatus.SUCCESSFUL);
+
+                transactionRepository5.save(transaction);
+               return transaction.getTransactionId();
+              // return null; //return transactionId instead
 
              }
              
             
 
-       return null; //return transactionId instead
-    }
+      
+    
 
     public Transaction returnBook(int cardId, int bookId) throws Exception{
 
@@ -97,6 +105,9 @@ public class TransactionService {
         //for the given transaction calculate the fine amount considering the book has been returned exactly when this function is called
         //make the book available for other users
         //make a new transaction for return book which contains the fine amount as well
+        Date issueDate=transaction.getTransactionDate();
+        long issuetime=Math.abs(System.currentTimeMillis()-issueDate.getTime());
+        long NumberOfDays=TimeUnit.DAYS.convert(issuetime, TimeUnit.MILLISECONDS);
          transaction.setFineAmount(transaction.getFineAmount());
          Transaction tran=new Transaction();
          Book book=bookRepository5.findById(bookId).get();
@@ -113,6 +124,7 @@ public class TransactionService {
          cardRepository5.save(card);
          tran.setBook(book);
          tran.setCard(card);
+         tran.setIssueOperation(false);
          tran.setFineAmount(200);
          tran.setTransactionDate(new Date());
          tran.setTransactionStatus(TransactionStatus.SUCCESSFUL);

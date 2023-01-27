@@ -45,7 +45,7 @@ public class Book {
     public Book() {
     }
 
-    public Book(String name, Genre genre, boolean available,Author author) {
+    public Book(String name, Genre genre,Author author) {
         this.name = name;
         this.genre = genre;
         this.available=false;
