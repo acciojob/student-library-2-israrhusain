@@ -25,19 +25,19 @@ public class BookService {
 
     public void createBook(Book book){
 
-        book.setAvailable(true);
-        book.setName(book.getName());
-        book.setGenre(book.getGenre());
+        // book.setAvailable(true);
+        // book.setName(book.getName());
+        // book.setGenre(book.getGenre());
        
          
-        //set author
-        int id=book.getAuthor().getId();
+        // //set author
+        // int id=book.getAuthor().getId();
        
-        Author author=rep.findById(id).get();
-        List<Book> list=author.getBooksWritten();
-        list.add(book);
-        author.setBooksWritten(list);
-        book.setAuthor(author);
+        // Author author=rep.findById(id).get();
+        // List<Book> list=author.getBooksWritten();
+        // list.add(book);
+        // author.setBooksWritten(list);
+        // book.setAuthor(author);
        
        
         bookRepository2.save(book);
