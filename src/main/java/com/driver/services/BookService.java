@@ -25,7 +25,7 @@ public class BookService {
 
     public void createBook(Book book){
 
-        // book.setAvailable(true);
+          book.setAvailable(true);
         // book.setName(book.getName());
         // book.setGenre(book.getGenre());
        
@@ -46,7 +46,13 @@ public class BookService {
 
     public List<Book> getBooks(String genre, boolean available, String author){
         List<Book> books = new ArrayList<>(); //find the elements of the list by yourself
-         if(genre!=null){
+        if(author!=null && genre!=null){
+            books= bookRepository2.findBooksByGenreAuthor(genre,author,available);
+            
+           }
+        
+        
+        else if(genre!=null){
             books=bookRepository2.findBooksByGenre(genre,available); 
             
          }
@@ -54,10 +60,7 @@ public class BookService {
            books= bookRepository2.findBooksByAuthor(author,available);
            
          }
-         else if(author!=null && genre!=null){
-          books= bookRepository2.findBooksByGenreAuthor(genre,author,available);
-          
-         }
+        
          else{
             books=bookRepository2.findByAvailability(available);
             
