@@ -19,7 +19,8 @@ public class Author {
     private int age;
     private String country;
 
-    
+    public Author() {
+    }
 
     public Author(String name, String email, int age, String country) {
     
@@ -35,8 +36,7 @@ public class Author {
     private List<Book> booksWritten;
 
 
-    public Author() {
-    }
+   
 
     public int getId() {
         return id;

@@ -108,25 +108,24 @@ public class TransactionService {
         Date issueDate=transaction.getTransactionDate();
         long issuetime=Math.abs(System.currentTimeMillis()-issueDate.getTime());
         long NumberOfDays=TimeUnit.DAYS.convert(issuetime, TimeUnit.MILLISECONDS);
-         transaction.setFineAmount(transaction.getFineAmount());
-         Transaction tran=new Transaction();
-         Book book=bookRepository5.findById(bookId).get();
-         Card card=cardRepository5.findById(cardId).get();
-         book.setId(bookId);
-         
-         List<Transaction> list=book.getTransactions();
-         list.add(transaction);
-         book.setTransactions(list);
+        int fine=0;
+        if(NumberOfDays>getMax_allowed_days){
+            fine=(int)((NumberOfDays-getMax_allowed_days)*fine_per_day);
+        }
 
-         List<Book> l=card.getBooks();
-         l.add(book);
-         card.setBooks(l);
-         cardRepository5.save(card);
-         tran.setBook(book);
-         tran.setCard(card);
+        Book book=transaction.getBook();
+        book.setAvailable(true);
+        book.setCard(null);
+
+        bookRepository5.updateBook(book);
+
+        Transaction tran=new Transaction();
+
+        tran.setBook(transaction.getBook());
+        tran.setCard(transaction.getCard());
+
          tran.setIssueOperation(false);
-         tran.setFineAmount(200);
-         tran.setTransactionDate(new Date());
+         tran.setFineAmount(fine);
          tran.setTransactionStatus(TransactionStatus.SUCCESSFUL);
          transactionRepository5.save(tran);
         Transaction returnBookTransaction  = null;
