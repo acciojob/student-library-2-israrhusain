@@ -59,7 +59,7 @@ public class TransactionService {
                     throw new Exception ("Book is either unavailable or not present");
                 }
                 CardStatus status=card.getCardStatus();
-                if(card==null && (status.equals(CardStatus.DEACTIVATED))) {
+                if(card==null || (status.equals(CardStatus.DEACTIVATED))) {
                     transaction.setTransactionStatus(TransactionStatus.FAILED);
                       throw new Exception("Card is invalid");
                 }
